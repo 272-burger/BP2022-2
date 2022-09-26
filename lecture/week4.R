@@ -77,7 +77,7 @@ cars_new <- rename(cars_new, c(Manufacturer = "v1",
 
 names(cars_new)
 
-### reshape 패키지의 rename 함수 사용
+### dplyr 패키지의 rename 함수 사용
 install.packages("dplyr")
 library(dplyr)
 

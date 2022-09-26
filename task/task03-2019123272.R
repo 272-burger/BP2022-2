@@ -54,9 +54,9 @@ names(iris_subset)
 
 ## 3.3. iris_subset 데이터 세트의 변수명을 dplyr 패키지의 rename( ) 함수를 사용하여 “Length”, “Width”, “Variety”로 변경하여 iris_subset2 변수로 저장하세요. 
 library(dplyr)
-iris_subset2 <- rename(iris_subset, c(Length = V1,
+iris_subset2 <- rename(iris_subset, Length = V1,
                                Width = V2,
-                               Variety = V3))
+                               Variety = V3)
 
 iris_subset2
 
