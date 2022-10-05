@@ -117,12 +117,13 @@ airquality %>%
 ## 5.3. Solar.R의 결측치를 평균으로 대체하세요.
 ## (단, 평균은 소수점 첫째자리에서 반올림한 정수값을 직접 입력하여 사용하세요.)
 ## 평균: 186
-airquality$Solar.R <- ifelse(is.na(airquality$Solar.R), 186, airquality$Solar.R) # 결측치 평균값으로 대체
-airquality # 실제 데이터 프레임 대체됨
+airquality_new <- airquality
+airquality_new$Solar.R <- ifelse(is.na(airquality$Solar.R), 186, airquality$Solar.R) # 결측치 평균값으로 대체
+airquality_new # 실제 데이터 프레임 대체됨
 
 ## 5.4. dplyr 패키지의 함수를 사용하여 결측치를 평균으로 대체한 Solar.R의 평균을 구하세요.
 airquality %>%
-  summarise(mean_Solar.R = mean(Solar.R)) 
+  summarise(mean_Solar.R = mean(Solar.R, na.rm = T)) 
 
 # 6. airquality 데이터를 이용하여 다음을 해결하세요.
 ## 6.1.변수 Ozone에 몇 개의 결측치가 있는지 알아보세요.
