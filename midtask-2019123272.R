@@ -17,7 +17,7 @@ df_ms
 # 특히 데이터 내부구조를 반드시 확인하여 기재하세요.
 
 # 1) 데이터 앞부분 보기 
-head(df_ms, n = 5) # 1 ~ 5행 출력, 몇몇 칼럼에 대해 결측값이 존재
+head(df_ms, n = 5) # 1 ~ 5행 출력, 몇몇 칼럼에 대해 결측값이 존재함을 확인할 수 있다
 
 # 2) 데이터 뒷부분 보기
 tail(df_ms, n =5) # 79 ~ 83행 출력, bodywt 변수의 경우 데이터들 간의 편차가 클 것 같다 
@@ -28,14 +28,14 @@ tail(df_ms, n =5) # 79 ~ 83행 출력, bodywt 변수의 경우 데이터들 간�
 names(df_ms) # 변수 총 11개
 
 # 4) 데이터 세트 내부구조 보기
-str(df_ms) # 문자형 데이터를 가진 변수 5개 (name, genus, vore, order, conservation)
-           # 숫자형 데이터를 가진 변수 6개 (sleep_total, sleep_rem, sleep_cycle, awake, brainwt, bodywt)
+str(df_ms) # 문자형 데이터타입을 가진 변수 5개 (name, genus, vore, order, conservation)
+           # 숫자형 데이터타입을 가진 변수 6개 (sleep_total, sleep_rem, sleep_cycle, awake, brainwt, bodywt)
 
 # 5) 데이터 세트 데이터 차원 보기
 dim(df_ms) # 83행 11열
 
 # 6) 데이터 세트 기초통계량 요약 보기
-summary(df_ms) # 숫자형 데이터를 가진 변수 중 결측치가 존재하는 변수: sleep_rem, sleep_cycle, brainwt
+summary(df_ms) # 숫자형 데이터를 가진 변수 중 결측치가 존재하는 변수들(sleep_rem, sleep_cycle, brainwt)을 확인해 볼 수 있다
 
 ###################2번#####################
 # 2.1 모든 변수에 대하여 각각 결측치가 있는 변수인지 확인하세요.
@@ -55,18 +55,18 @@ table(is.na(df_ms$bodywt)) # FALSE
 # 2.2 변수의 데이터타입이 문자열(chr)로 되어 있는 변수 중에 
 # 결측치가 있는 변수에 대해서 결측치들을 “Unknown”으로 변환하세요.
 
-# 문자열 변수 중 결측치가 있는 변수: vore, conservation
-df_ms$vore <- ifelse(is.na(df_ms$vore), "Unknown", df_ms$vore) # 결측치가 있는 경우 다른 값으로 대체
+# 문자형 데이터타입을 가진 변수 중 결측치가 있는 변수: vore, conservation
+df_ms$vore <- ifelse(is.na(df_ms$vore), "Unknown", df_ms$vore) # 조건문 활용하여 결측치가 있는 경우 Unknown으로 대체
 table(is.na(df_ms$vore)) # 결측치 대체됐는지 확인
 
-df_ms$conservation <- ifelse(is.na(df_ms$conservation), "Unknown", df_ms$conservation) # 결측치가 있는 경우 다른 값으로 대체
-table(is.na(df_ms$conservatio)) # 결측치 대체됐는지 확인
+df_ms$conservation <- ifelse(is.na(df_ms$conservation), "Unknown", df_ms$conservation) 
+table(is.na(df_ms$conservation)) 
 
 # 2.3 극단치가 있는지 확인이 필요한 모든 변수에 대해 각각 극단치를 확인하세요.
 
 # 숫자형 변수들(sleep_total, sleep_rem, sleep_cycle, awake, brainwt, bodywt)에 대해 극단치 확인
 # 모두 연속형이므로 상자그림 통계로 극단치(상자밖 데이터)를 찾는다
-library(dplyr) # dplyr 패키지의 filter() 함수로 극단치에 해당하는 행 추출
+library(dplyr) # dplyr 패키지의 filter() 함수로 극단치에 해당하는 행 출력하여 확인
 # 극단치 = 최소값(수염 아래 경계선), 최대값(수염 위 경계선)을 벗어난 값 
 
 ## sleep_total
@@ -97,7 +97,7 @@ df_ms %>%
 ## bodywt
 boxplot(df_ms$bodywt)$stat # 최소: 0.005, 최대: 100.000
 df_ms %>%
-  filter(df_ms$brainwt > 100.000 | df_ms$brainwt < 0.005) # 17개 
+  filter(df_ms$bodywt > 100.000 | df_ms$bodywt < 0.005) # 11개 
 
 
 
@@ -107,13 +107,17 @@ df_ms %>%
 # sleep_rem, sleep_cycle 변수에 대한 극단치를 결측치로 처리
 # ifelse 조건문으로 극단치 조건에 해당하는 경우 NA로 처리, 아닌 경우 원래 데이터 유지
 
-## sleep_rem
-df_ms$sleep_rem <- ifelse(df_ms$sleep_rem > 3.9 | df_ms$sleep_rem < 0.1, NA, df_ms$sleep_rem)
-table(is.na(df_ms$sleep_rem)) # TRUE(결측치) 25개
+## sleep_rem 결측치 3개 
+table(is.na(df_ms$sleep_rem)) # 극단치 결측치 처리 전 결측치 수 확인: 22개 
 
-## sleep_cycle
+df_ms$sleep_rem <- ifelse(df_ms$sleep_rem > 3.9 | df_ms$sleep_rem < 0.1, NA, df_ms$sleep_rem)
+table(is.na(df_ms$sleep_rem)) # 결측치 작업 후 총 TRUE(결측치): 25개
+
+## sleep_cycle 결측치 4개 
+table(is.na(df_ms$sleep_cycle)) # 극단치 결측치 처리 전 결측치 수 확인: 51개 
+
 df_ms$sleep_cycle <- ifelse(df_ms$sleep_cycle > 1.0000000 | df_ms$sleep_cycle < 0.1166667, NA, df_ms$sleep_cycle)
-table(is.na(df_ms$sleep_cycle)) # TRUE(결측치) 55개
+table(is.na(df_ms$sleep_cycle)) # 결측치 작업 후 총 TRUE(결측치): 55개
 
 ###################3번#####################
 # 3.1 총수면량에서 렘(rem)수면량을 제외한 비렘수면량(sleep_nonrem)을 
@@ -121,7 +125,6 @@ table(is.na(df_ms$sleep_cycle)) # TRUE(결측치) 55개
 
 # 변수 sleep_total에서 변수 sleep_rem을 빼서 새로운 파생변수 sleep_nonrem에 할당
 df_ms$sleep_nonrem <- df_ms$sleep_total - df_ms$sleep_rem
-df_ms
 
 # 3.2 총수면량과 렘(rem)수면량, 비렘수면량에 대해서 분 단위(in hours to minutes)로 계산된 파생변수를 각각 만들어 보세요.
 # (기존 변수명 뒤에 '_min'을 붙이세요). 시간 단위로 되어 있는 변수를 분 단위 변수로 변경할 때 수식에 유의하도록 하세요.
@@ -130,26 +133,25 @@ df_ms
 df_ms$sleep_total_min <- df_ms$sleep_total * 60
 df_ms$sleep_rem_min <- df_ms$sleep_rem * 60
 df_ms$sleep_nonrem_min <- df_ms$sleep_nonrem * 60
-df_ms
 
 names(df_ms) # 데이터프레임에 파생변수  "sleep_nonrem", "sleep_total_min", "sleep_rem_min", "sleep_nonrem_min" 생긴 것 확인
 
 ###################4번#####################
 # 4.1 식성 구분(육/잡/초/충/모름)이 들어 있는 변수의 각 식성별 빈도수를 빈도표로 확인해보세요.
 
-# ggplot2 패키지의 빈도막대그래프 geom_bar()
+# ggplot2 패키지의 빈도막대그래프 geom_bar()로 식성별 빈도수 확인 
 library(ggplot2) # ggplot2 패키지 불러오기
+
 ggplot(data = df_ms, aes(x = df_ms$vore)) +
-  geom_bar() 
-## 빈도는 초>잡>육>모름>충 순
+  geom_bar() # 그래프를 통해 빈도는 초>잡>육>모름>충 순임을 확인할 수 있다 
 
 # 4.2 잡식동물(omni)의 총수면량(분 단위), 렘수면량(분 단위), 비렘수면량(분 단위)을 
 # 내장함수를 사용하는 방법과 dplyr 패키지 방식을 각각 사용하여 추출해보세요.
 
 # 1) 내장함수 사용 
 df_ms[df_ms$vore == "omni",][c('sleep_total_min', 'sleep_rem_min', 'sleep_nonrem_min')]
-## df_ms[df_ms$vore == "omni",]: vore가 omni에 해당하는 행을 가져온 다음
-## [c('sleep_total_min', 'sleep_rem_min', 'sleep_nonrem_min')]: c()로 지정해준 열만 추출
+## df_ms[df_ms$vore == "omni",]: vore가 omni에 해당하는 행과
+## [c('sleep_total_min', 'sleep_rem_min', 'sleep_nonrem_min')]: c()로 묶어 지정한 열에 해당하는 데이터 프레임 추출
 
 
 # 2) dplyr 패키지 방식 사용
@@ -168,7 +170,7 @@ mean(df_ms[df_ms$vore == "herbi",'sleep_total'])
 mean(df_ms[df_ms$vore == "insecti",'sleep_total'])
 mean(df_ms[df_ms$vore == "omni",'sleep_total'])
 mean(df_ms[df_ms$vore == "Unknown",'sleep_total'])
-# 조건에 해당하는 데이터 추출해서 기초통계량 함수인 mean()으로 평균 구한다. 
+# 조건에 해당하는 데이터를 추출해서 기초통계량 함수인 mean()으로 평균 구한다. 
 
 # 2) dplyr 패키지 방식 사용
 df_ms %>%
@@ -186,7 +188,7 @@ df_vore_mean <- df_ms %>%
   summarise(mean_sleeptime = mean(sleep_total_min)) 
 
 # geom_col() 막대그래프
-# reorder() 함수로 -mean_sleeptime에 대해 내림차순 정렬 
+# reorder() 함수로 mean_sleeptime_min에 대해 내림차순 정렬 
 ggplot(data = df_vore_mean, aes(x = reorder(vore, -mean_sleeptime), y = mean_sleeptime)) +
   geom_col()
 
@@ -207,7 +209,6 @@ red_list
 
 # df_ms 데이터 프레임의 "conservation"을 기준으로 결합: left_join 
 df_ms <- left_join(df_ms, red_list, by = "conservation")
-df_ms
 
 
 # 5.3 멸종 위기 수준(high/low/non)에 따라 깨어있는 시간의 평균, 중앙값, 최소값, 최대값, 빈도를 구해보세요.
@@ -215,19 +216,23 @@ df_ms
 sum(is.na(df_ms$awake)) # 연산하기 전 결측치 있는지 확인
 
 df_ms %>%
+  filter(!is.na(risk)) %>% # risk 변수의 결측치 제거 
   group_by(risk) %>% # 멸종 위기 수준에 따라 groupby()
   # 통계치 산출 함수 summarise()
   summarise(mean_awake = mean(awake), # 평균 
             med_awake = median(awake), # 중앙값
             min_awake = min(awake), # 최소값
             max_awake = max(awake), # 최대값
-            count_awake = length(awake)) # 빈도
+            count_awake = length(awake)) # 빈도; n()로 행의 개수 세어도 같은 결과
+
 
 # 5.4 멸종 위기 수준(high/low/non)에 따라 렘수면(분 단위)의 평균, 중앙값, 최소값, 최대값, 빈도를 구해보세요.
 
-sum(is.na(df_ms$risk)) # 연산하기 전 결측치 있는지 확인
+sum(is.na(df_ms$sleep_rem_min)) # 연산하기 전 결측치 있는지 확인
+# 결측치가 있으므로 제거하고 연산해야 한다 
 
 df_ms %>%
+  filter(!is.na(risk)) %>% # risk 변수의 결측치 제거 
   group_by(risk) %>% # 멸종 위기 수준에 따라 groupby()
   # 통계치 산출 함수 summarise()
   # 결측치 제거 파라미터 na.rm = T
@@ -235,14 +240,14 @@ df_ms %>%
             med_rem = median(sleep_rem_min,  na.rm = T), # 중앙값
             min_rem = min(sleep_rem_min,  na.rm = T), # 최소값
             max_rem = max(sleep_rem_min,  na.rm = T), # 최대값
-            count_rem = length(sleep_rem_min)) # 빈도
+            count_rem = length(sleep_rem_min)) # 빈도; n()로 행의 개수 세어도 같은 결과
 
 
 
 ###################6번#####################
 # 6.1 가축(domesticated)만 추출해서 몸무게(x축)와 뇌 무게(y축)를 산점도로 나타내보세요.
 
-# 가출만 추출해서 데이터 프레임 df_domes에 할당
+# 가축만 추출해서 데이터 프레임 df_domes에 할당
 df_domes <- df_ms[df_ms$conservation == "domesticated",]
 
 # 산점도 geom_point()
@@ -263,21 +268,20 @@ df_ms
 # (변수명 일부가 깨져서 나온다면 fileEncoding="UTF-8-BOM" 파라미터를 설정하세요.)
 
 mammal_theria <- read.csv("mammal_theria.csv")
-mammal_theria
+View(mammal_theria)
 
 # 7.2 df_ms 데이터에 두 분류 칼럼 theria_main와 theria_sub이 오른쪽에 파생변수로 추가되도록 하세요.
 
 df_ms <- left_join(df_ms, mammal_theria, by = "order") # df_ms의 order를 기준으로 left_join
-df_ms
 
 # 7.3 로라시아상목(Laurasiatheria)과 영장상목(Euarchontoglires)만 추출하여 가장 많은 분류명(order) 을 5개 출력하세요.
 # 이때 상위 5위부터 상위 1위까지 순서로 보여지도록 하세요.
 
-# theria_sub가 로라시아상목(Laurasiatheria)과 영장상목(Euarchontoglires)인 행만 추출해서 데이터 프레임 df_lau_and_eua로
+# theria_sub가 로라시아상목(Laurasiatheria)이거나(OR) 영장상목(Euarchontoglires)인 행만 추출해서 데이터 프레임 df_lau_and_eua로
 df_lau_and_eua <- df_ms[df_ms$theria_sub == "Laurasiatheria" | df_ms$theria_sub == "Euarchontoglires", ]
-df_lau_and_eua
+df_lau_and_eua 
 
-# 가장 많은 분류명(order) 5개 
+# 가장 많은 분류명(order) 5개 상위 5위부터 1위 순으로 정렬 
 df_lau_and_eua %>%
   group_by(order) %>% 
   summarise(count_order = length(order)) %>% # 분류명별 행의 개수 count_order 변수로 지정 
@@ -296,7 +300,7 @@ df_ms$sleep_grade <- ifelse(df_ms$sleep_total >= 15, "A",
 
 df_ms %>%
   group_by(sleep_grade) %>% # sleep_grade별 행의 개수 세기
-  summarise(num_sleep_grade = length(sleep_grade))
+  summarise(num_sleep_grade = length(sleep_grade)) # n()으로 행의 개수 세어도 같은 결과 
 
 # 빈도막대그래프 확인
 ggplot(data = df_ms, 
@@ -306,16 +310,15 @@ ggplot(data = df_ms,
 # 8.2 총수면량 중 비렘수면의 백분율을 나타내는 nonrem_ratio 라는 파생변수를 dplyr 사용하여 만들어 보세요.
 df_ms <- # 재할당해줘야 df_ms에도 추가됨 
   df_ms %>%
-  mutate(nonrem_ratio = (sleep_nonrem / sleep_total) *100)
+  mutate(nonrem_ratio = (sleep_nonrem / sleep_total) *100) # mutate() 함수로 파생변수 생성 
 
-df_ms
 
 # 8.3 수면량 등급별 비렘수면 백분율을 막대그래프로 나타내보세요. 
 # 이때 막대그래프는 평균이 낮은 순으로 보여지게 하세요.
 
 # 수면량 등급별 평균 비렘수면 백분율 데이터 프레임
 df_nonrem_mean <- df_ms %>%
-  group_by(sleep_grade) %>%
+  group_by(sleep_grade) %>% # 수면량 등급으로 group_by
   summarise(nonrem_mean = mean(nonrem_ratio, na.rm = T)) 
 df_nonrem_mean
 
@@ -335,8 +338,6 @@ df_nonrem_mean2
 
 ggplot(data = df_nonrem_mean2, aes(x = reorder(vore, nonrem_mean), y = nonrem_mean)) +
   geom_col()
-
-
 
   
 ###################9번#####################
@@ -359,6 +360,7 @@ sum(is.na(df_ms$sleep_total)) # 결측치 없음
 
 # brain_grade별총수면량(시간 단위)의 최소값, 중앙값, 평균, 최대값, 빈도 연산 
 df_ms %>%
+  filter(!is.na(brain_grade)) %>% # brain_grade 결측치 제거 
   group_by(brain_grade) %>%
   summarise(min_sleep = min(sleep_total),
             med_sleep = median(sleep_total),
